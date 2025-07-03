@@ -13,7 +13,7 @@ const router = createBrowserRouter([
   {
     path: '/task',
     element: <TaskPage/>,
-  }
+  },
 ])
 
 createRoot(document.getElementById('root')).render(

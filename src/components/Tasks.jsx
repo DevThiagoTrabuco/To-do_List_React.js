@@ -1,4 +1,4 @@
-import {CheckIcon, ChevronRightIcon, TrashIcon} from 'lucide-react';
+import {AlarmClock, CheckIcon, ChevronRightIcon, TrashIcon, XIcon} from 'lucide-react';
 import { useNavigate } from 'react-router';
 import Button from './Button';
 
@@ -7,9 +7,29 @@ function Tasks({ tasks, onTaskClick, onDeleteTaskClick }) {
 
     function onSeeDetailsClick(task) {
         const query = new URLSearchParams();
-        query.set('title', task.title);
-        query.set('description', task.description);
+        query.set('id', task.id);
         navigate(`/task?${query.toString()}`);
+    }
+
+    function parseLocalDate(dateString) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    }
+
+    const isDue = task => {
+        const today = new Date();
+        const dueDate = new parseLocalDate(task.dueDate);
+        today.setHours(0, 0, 0, 0);
+        dueDate.setHours(0, 0, 0, 0);
+        return dueDate < today;
+    }
+
+    const isToday = task => {
+        const today = new Date();
+        const dueDate = new parseLocalDate(task.dueDate);
+        today.setHours(0, 0, 0, 0);
+        dueDate.setHours(0, 0, 0, 0);
+        return dueDate.getTime() === today.getTime();
     }
 
     return (
@@ -18,10 +38,20 @@ function Tasks({ tasks, onTaskClick, onDeleteTaskClick }) {
                 <li key={task.id} className="flex gap-2">
                     <button
                         onClick={() => onTaskClick(task.id)}
-                        className={`bg-slate-400 w-full p-2 text-white rounded-md text-left flex items-center gap-2 ${task.isCompleted && 'line-through'}`}>
-                        {task.isCompleted ? <CheckIcon/> : ''}
+                        className="bg-slate-400 w-full p-2 text-white rounded-md text-left">
                         {task.title}
                     </button>
+                    <Button>
+                        {task.isCompleted ?
+                            <CheckIcon className='text-green-700' />
+                        : isToday(task) ?
+                            <AlarmClock className='text-yellow-400' />
+                        : !isDue(task) ?
+                            <AlarmClock className='text-blue-500' />
+                        :
+                            <XIcon className='text-red-600' />
+                        }
+                    </Button>
                     <Button
                         onClick={() => onSeeDetailsClick(task)}>
                         <ChevronRightIcon/>
