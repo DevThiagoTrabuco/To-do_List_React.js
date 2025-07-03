@@ -52,7 +52,7 @@ function AddTask({ onAddTaskSubmit }) {
                     onAddTaskSubmit(title, description, dueDate);
                     clearForm();
                 }}
-                className="bg-slate-500 outline-slate-400 px-4 py-2 rounded-md font-medium text-white">
+                className="bg-slate-500 outline-slate-400 px-4 py-2 rounded-md font-medium text-white hover:cursor-pointer">
                 Adicionar tarefa
             </button>
         </div>

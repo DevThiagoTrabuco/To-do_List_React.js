@@ -7,33 +7,24 @@ function TaskPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const taskId = searchParams.get("id");
-
+  const today = new Date();
+  
   const task = useMemo(() => {
     const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
     return tasks.find(t => String(t.id) === String(taskId));
   }, [taskId]);
-
+  
   function parseLocalDate(dateString) {
-        const [year, month, day] = dateString.split('-').map(Number);
-        return new Date(year, month - 1, day);
-    }
-
-  const isDue = task => {
-    const today = new Date();
-    const dueDate = new parseLocalDate(task.dueDate);
-    today.setHours(0, 0, 0, 0);
-    dueDate.setHours(0, 0, 0, 0);
-    return dueDate < today;
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
   }
+  
+  const lastDay = new parseLocalDate(task.dueDate);
+  
+  const isDue = lastDay => {return lastDay.getDate() < today.getDate()};
 
-  const isToday = task => {
-    const today = new Date();
-    const dueDate = new parseLocalDate(task.dueDate);
-    today.setHours(0, 0, 0, 0);
-    dueDate.setHours(0, 0, 0, 0);
-    return dueDate.getTime() === today.getTime();
-  }
-
+  const isToday = lastDay => {return lastDay.getDate() === today.getDate()};
+    
   function onBackClick() {
     navigate(-1);
   }
@@ -46,7 +37,7 @@ function TaskPage() {
     );
   }
 
-  const formattedDate = new Date(task.dueDate).toLocaleDateString("pt-BR");
+  const formattedDate = lastDay.toLocaleDateString("pt-BR");
 
   return (
     <div className="w-screen h-screen bg-slate-500 flex justify-center p-6">
@@ -70,11 +61,11 @@ function TaskPage() {
             <p className="text-green-700 mt-2">
               Tarefa concluída
             </p>
-          ) : isToday(task) ? (
+          ) : isToday(lastDay) ? (
             <p className="text-yellow-400 mt-2">
               Tarefa para hoje
             </p>
-          ) : !isDue(task) ? (
+          ) : !isDue(lastDay) ? (
             <p className="text-blue-700 mt-2">
               Tarefa pendente
            </p>
