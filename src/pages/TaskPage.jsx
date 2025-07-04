@@ -1,7 +1,7 @@
 import { Calendar, ChevronLeftIcon, XIcon, CheckIcon, PencilIcon } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import Title from "../components/Title";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import EditTask from "../components/EditTask";
 import Button from "../components/Button";
 
@@ -9,11 +9,10 @@ function TaskPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const taskId = searchParams.get("id");
-  
-  const task = useMemo(() => {
+  const [task, setTask] = useState(() => {
     const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
     return tasks.find(t => String(t.id) === String(taskId));
-  }, [taskId]);
+  });
   
   function parseLocalDate(dateString) {
     const [year, month, day] = dateString.split('-').map(Number);
@@ -42,12 +41,19 @@ function TaskPage() {
           description,
           dueDate,
         };
-      } else {
-        return t;
       }
+      return t;
     });
+
     localStorage.setItem("tasks", JSON.stringify(newTasks));
-    window.location.reload();
+
+    // Atualiza o estado sem recarregar a página
+    setTask(prev => ({
+      ...prev,
+      title,
+      description,
+      dueDate
+    }));
   }
 
   function updateTaskStatus() {
@@ -58,12 +64,16 @@ function TaskPage() {
           ...t,
           isCompleted: !t.isCompleted,
         };
-      } else {
-        return t;
       }
+      return t;
     });
+
     localStorage.setItem("tasks", JSON.stringify(newTasks));
-    window.location.reload();
+
+    setTask(prev => ({
+      ...prev,
+      isCompleted: !prev.isCompleted
+    }));
   }
     
   function onBackClick() {
