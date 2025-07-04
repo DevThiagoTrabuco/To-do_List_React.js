@@ -6,29 +6,29 @@ import Title from "./components/Title";
 
 function App() {
   const [tasks, setTasks] = useState(
-    JSON.parse(localStorage.getItem('tasks')) || []
+    JSON.parse(localStorage.getItem("tasks")) || []
   );
-  
+
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
   function onTaskClick(taskId) {
-    const newTasks = tasks.map(task => {
+    const newTasks = tasks.map((task) => {
       if (task.id === taskId) {
         return {
           ...task,
-          isCompleted: !task.isCompleted
-        }
+          isCompleted: !task.isCompleted,
+        };
       } else {
-        return task
+        return task;
       }
     });
     setTasks(newTasks);
   }
 
   function onDeleteTaskClick(taskId) {
-    const newTasks = tasks.filter(task => task.id !== taskId);
+    const newTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(newTasks);
   }
 
@@ -47,11 +47,15 @@ function App() {
     <div className="max-w-screen min-h-screen bg-slate-500 flex justify-center p-6">
       <div className="w-[500px] space-y-4">
         <Title>Gerenciador de Tarefas</Title>
-        <AddTask onAddTaskSubmit={onAddTaskSubmit}/>
-        <Tasks tasks={tasks} onTaskClick={onTaskClick} onDeleteTaskClick={onDeleteTaskClick}/>
+        <AddTask onAddTaskSubmit={onAddTaskSubmit} />
+        <Tasks
+          tasks={tasks}
+          onTaskClick={onTaskClick}
+          onDeleteTaskClick={onDeleteTaskClick}
+        />
       </div>
     </div>
-  )
+  );
 }
 
 export default App;
