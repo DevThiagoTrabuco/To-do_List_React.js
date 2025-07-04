@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeftIcon, XIcon, CheckIcon, PencilIcon } from "lucide-react";
+import { Calendar, ChevronLeftIcon, XIcon, CheckIcon, PencilIcon, TrashIcon } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import Title from "../components/Title";
 import { useState } from "react";
@@ -75,6 +75,13 @@ function TaskPage() {
       isCompleted: !prev.isCompleted
     }));
   }
+
+  function onDeleteTaskClick() {
+    const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+    const newTasks = tasks.filter(t => String(t.id) !== String(taskId));
+    localStorage.setItem("tasks", JSON.stringify(newTasks));
+    navigate(-1);
+  }
     
   function onBackClick() {
     navigate(-1);
@@ -138,6 +145,10 @@ function TaskPage() {
                   <PencilIcon className="text-black" /> :
                   <XIcon className="text-red-600" />
                 }
+              </Button>
+              <Button
+                onClick={() => onDeleteTaskClick()}>
+                <TrashIcon className="text-black"/>
               </Button>
             </div>
           </div>
