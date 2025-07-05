@@ -10,6 +10,7 @@ import Button from "./Button";
 
 function Tasks({ tasks, onTaskClick, onDeleteTaskClick }) {
   const navigate = useNavigate();
+  const isTasksEmpty = tasks.length === 0;
 
   function onSeeDetailsClick(task) {
     const query = new URLSearchParams();
@@ -40,33 +41,37 @@ function Tasks({ tasks, onTaskClick, onDeleteTaskClick }) {
 
   return (
     <ul className="space-y-4 p-6 bg-slate-200 rounded-md shadow">
-      {tasks.map((task) => (
-        <li key={task.id} className="flex gap-2">
-          <button
-            onClick={() => onTaskClick(task.id)}
-            className="bg-slate-400 w-full p-2 text-white rounded-md text-left hover:cursor-pointer"
-          >
-            {task.title}
-          </button>
-          <Button>
-            {task.isCompleted ? (
-              <CheckIcon className="text-green-700" />
-            ) : isToday(task) ? (
-              <AlarmClock className="text-yellow-400" />
-            ) : !isDue(task) ? (
-              <AlarmClock className="text-blue-500" />
-            ) : (
-              <XIcon className="text-red-600" />
-            )}
-          </Button>
-          <Button onClick={() => onSeeDetailsClick(task)}>
-            <ChevronRightIcon />
-          </Button>
-          <Button onClick={() => onDeleteTaskClick(task.id)}>
-            <TrashIcon />
-          </Button>
-        </li>
-      ))}
+      {isTasksEmpty ? (
+        <li className="text-center text-black">Não há tarefas cadastradas</li>
+      ) : (
+        tasks.map((task) => (
+          <li key={task.id} className="flex gap-2">
+            <button
+              onClick={() => onTaskClick(task.id)}
+              className="bg-slate-400 w-full p-2 text-white rounded-md text-left hover:cursor-pointer"
+            >
+              {task.title}
+            </button>
+            <Button>
+              {task.isCompleted ? (
+                <CheckIcon className="text-green-700" />
+              ) : isToday(task) ? (
+                <AlarmClock className="text-yellow-400" />
+              ) : !isDue(task) ? (
+                <AlarmClock className="text-blue-500" />
+              ) : (
+                <XIcon className="text-red-600" />
+              )}
+            </Button>
+            <Button onClick={() => onSeeDetailsClick(task)}>
+              <ChevronRightIcon />
+            </Button>
+            <Button onClick={() => onDeleteTaskClick(task.id)}>
+              <TrashIcon />
+            </Button>
+          </li>
+        ))
+      )}
     </ul>
   );
 }

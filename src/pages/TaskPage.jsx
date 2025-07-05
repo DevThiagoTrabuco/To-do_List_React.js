@@ -1,7 +1,7 @@
-import { Calendar, ChevronLeftIcon, XIcon, CheckIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { Calendar, ChevronLeftIcon, XIcon, CheckIcon, PencilIcon, TrashIcon, Undo2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
-import Title from "../components/Title";
 import { useState } from "react";
+import Title from "../components/Title";
 import EditTask from "../components/EditTask";
 import Button from "../components/Button";
 
@@ -107,7 +107,7 @@ function TaskPage() {
           <Title>Detalhes da Tarefa</Title>
         </div>
 
-        <div className="bg-slate-200 p-4 rounded-md">
+        <div className="bg-slate-200 p-4 rounded-md space-y-3">
           <h2 className="text-xl text-slate-600 font-bold flex justify-between items-center">
             <span>{task.title}</span>
             <span className="flex items-center gap-2"><Calendar/>{formattedDate}</span>
@@ -131,7 +131,7 @@ function TaskPage() {
                 Tarefa atrasada      
               </p>
             )}
-            <div className=" flex gap-2">
+            <div className=" flex gap-3">
               <Button
                 onClick={() => updateTaskStatus()}>
                 {task.isCompleted ?
@@ -140,10 +140,12 @@ function TaskPage() {
                 }
               </Button>
               <Button
-                onClick={() => showOrHideForm()}>
+                className={`${isDue(lastDay) ? 'hidden' : ''}`}
+                onClick={() => showOrHideForm()}
+              >
                 {isFormHidden ?
                   <PencilIcon className="text-black" /> :
-                  <XIcon className="text-red-600" />
+                  <Undo2 className="text-black"/>
                 }
               </Button>
               <Button
